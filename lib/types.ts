@@ -1,12 +1,9 @@
-
 export interface Package {
   id: string;
   quantity: number;
   quantityLabel: string;
   price: number;
   description: string;
-  deliveryTime: string;
-  quality: string;
   /** SSM panel service ID for backend */
   ssmServiceId?: number;
   /** Best seller flag */

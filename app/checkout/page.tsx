@@ -43,7 +43,6 @@ function CheckoutContent() {
       if (svc) {
         setService(svc);
         if (packageId) {
-          // Special offer: package starts with 'offer-', build from URL params
           if (packageId.startsWith('offer-')) {
             const offServiceId = parseInt(searchParams.get('serviceId') ?? '0', 10);
             const offQuantity = parseInt(searchParams.get('quantity') ?? '0', 10);
@@ -54,14 +53,11 @@ function CheckoutContent() {
                 name: `Special Offer — ${offQuantity} units`,
                 price: offPrice,
                 quantity: offQuantity,
-                deliveryTime: 'Instant',
-                quality: 'Real Quality',
                 serviceCategory: svc.packages[0]?.serviceCategory ?? 'followers',
                 ssmServiceId: offServiceId,
               } as PackageType);
             }
           } else {
-            // Normal package lookup
             const pkg = svc.packages.find((p) => p.id === packageId);
             if (pkg) setSelectedPackage(pkg);
           }
@@ -111,7 +107,6 @@ function CheckoutContent() {
     if (!service || !selectedPackage) { setOrderError('Invalid service or package'); return; }
 
     try {
-      // Non-Instagram services always use 'followers' as serviceCategory
       const isInstagram = serviceId === 'instagram';
       const result = await createOrderMutation.mutateAsync({
         serviceId: selectedPackage.ssmServiceId ?? 1,
@@ -179,11 +174,19 @@ function CheckoutContent() {
                   <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
                     <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">Order Summary</h2>
                     <div className="space-y-3 text-gray-600 text-sm sm:text-base">
-                      <div className="flex justify-between items-center pb-3 border-b border-gray-100"><span>Service</span><span className="font-semibold text-gray-800">{service.name}</span></div>
-                      <div className="flex justify-between items-center pb-3 border-b border-gray-100"><span>Package</span><span className="font-semibold text-gray-800">{selectedPackage.quantityLabel}</span></div>
-      
+                      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
+                        <span>Service</span>
+                        <span className="font-semibold text-gray-800">{service.name}</span>
+                      </div>
+                      <div className="flex justify-between items-center pb-3 border-b border-gray-100">
+                        <span>Package</span>
+                        <span className="font-semibold text-gray-800">{selectedPackage.quantityLabel}</span>
+                      </div>
                       {selectedPackage.serviceCategory && (
-                        <div className="flex justify-between items-center"><span>Type</span><span className={`font-semibold capitalize ${textClass}`}>{selectedPackage.serviceCategory}</span></div>
+                        <div className="flex justify-between items-center">
+                          <span>Type</span>
+                          <span className={`font-semibold capitalize ${textClass}`}>{selectedPackage.serviceCategory}</span>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -221,9 +224,21 @@ function CheckoutContent() {
                 <div className="lg:sticky lg:top-8 h-fit">
                   <div className={`bg-gradient-to-br ${service.bgGradient} rounded-lg p-4 sm:p-6 text-white shadow-xl mt-6 lg:mt-0`}>
                     <h3 className="text-base sm:text-lg font-bold mb-4 sm:mb-6">Total Cost</h3>
-                    <div className="flex justify-between items-center text-white/80 mb-4 text-sm sm:text-base"><span>{selectedPackage.quantityLabel}</span><span className="font-semibold text-white">₹{selectedPackage.price}</span></div>
-                    <div className="border-t border-white/20 pt-4"><div className="flex justify-between items-center text-lg font-bold"><span>Total</span><span className="text-xl sm:text-2xl">₹{selectedPackage.price}</span></div></div>
-                    <div className="mt-4 pt-4 border-t border-white/20 text-xs text-white/80 space-y-1"><p>🔒 Secure UPI Payment</p><p>⚡ Instant Confirmation</p><p>📱 All UPI apps supported</p></div>
+                    <div className="flex justify-between items-center text-white/80 mb-4 text-sm sm:text-base">
+                      <span>{selectedPackage.quantityLabel}</span>
+                      <span className="font-semibold text-white">₹{selectedPackage.price}</span>
+                    </div>
+                    <div className="border-t border-white/20 pt-4">
+                      <div className="flex justify-between items-center text-lg font-bold">
+                        <span>Total</span>
+                        <span className="text-xl sm:text-2xl">₹{selectedPackage.price}</span>
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-white/20 text-xs text-white/80 space-y-1">
+                      <p>🔒 Secure UPI Payment</p>
+                      <p>⚡ Instant Confirmation</p>
+                      <p>📱 All UPI apps supported</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -283,8 +298,7 @@ function CheckoutContent() {
                 <CheckCircle size={40} className="text-emerald-500" />
               </div>
               <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Order Confirmed! 🚀</h2>
-              <p className="text-gray-500 text-sm sm:text-base mb-2">Your order has been placed successfully.</p>
-              <p className="text-gray-400 text-xs mb-6">You&apos;ll start seeing results within {selectedPackage.deliveryTime}</p>
+              <p className="text-gray-500 text-sm sm:text-base mb-6">Your order has been placed successfully.</p>
 
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 text-left">
                 <div className="grid grid-cols-2 gap-3 text-sm">
