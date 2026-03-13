@@ -1,3 +1,4 @@
+
 export interface Package {
   id: string;
   quantity: number;
@@ -8,8 +9,24 @@ export interface Package {
   quality: string;
   /** SSM panel service ID for backend */
   ssmServiceId?: number;
-  /** Service category: followers, likes, comments, views */
-  serviceCategory?: 'followers' | 'likes' | 'comments' | 'views';
+  /** Best seller flag */
+  isBestSeller?: boolean;
+  /** Badge label e.g. "🎉 Holi Special" */
+  badge?: string;
+  /** Service category */
+  serviceCategory?:
+    | 'followers'
+    | 'likes'
+    | 'comments'
+    | 'views'
+    | 'story_views'
+    | 'subscribers'
+    | 'watchtime'
+    | 'streams'
+    | 'members'
+    | 'subscription'
+    | 'premium'
+    | 'reactions';
 }
 
 export interface Service {
