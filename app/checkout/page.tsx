@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, Suspense, useEffect, useRef } from 'react';
 import { getServiceBySlug } from '@/lib/services-data';
 import { createOrder as createLocalOrder } from '@/lib/order-manager';
-import { Service, Package as PackageType } from '@/admin_frontend/lib/types';
+import { Service, Package as PackageType } from '@/lib/types';
 import { useCreateOrder, useOrder } from '@/hooks/use-orders';
 import {
   CheckCircle,
@@ -51,6 +51,8 @@ function CheckoutContent() {
               setSelectedPackage({
                 id: packageId,
                 name: `Special Offer — ${offQuantity} units`,
+                quantityLabel: `${offQuantity} units`,
+                description: `Special Offer for ${offQuantity} units`,
                 price: offPrice,
                 quantity: offQuantity,
                 serviceCategory: svc.packages[0]?.serviceCategory ?? 'followers',
@@ -113,7 +115,7 @@ function CheckoutContent() {
         link: profileLink,
         quantity: selectedPackage.quantity,
         amount: selectedPackage.price,
-        serviceCategory: isInstagram ? (selectedPackage.serviceCategory ?? 'followers') : 'followers',
+        serviceCategory: (isInstagram ? (selectedPackage.serviceCategory ?? 'followers') : 'followers') as 'followers' | 'likes' | 'comments' | 'views',
       });
 
       if (result.success && result.data) {
@@ -197,7 +199,7 @@ function CheckoutContent() {
                       {selectedPackage.serviceCategory === 'followers' ? 'Instagram Profile URL' : 'Instagram Post / Reel URL'}
                     </label>
                     <input
-                      type="url"
+                      type="text"
                       placeholder={selectedPackage.serviceCategory === 'followers' ? 'https://instagram.com/yourprofile' : 'https://instagram.com/p/abc123 or /reel/abc123'}
                       value={profileLink}
                       onChange={(e) => { setProfileLink(e.target.value); setOrderError(''); }}
