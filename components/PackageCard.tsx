@@ -1,9 +1,7 @@
-
-
 'use client';
 
 import { Package } from '@/admin_frontend/lib/types';
-import { CheckCircle2, Zap, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
 import Link from 'next/link';
 
 interface PackageCardProps {
@@ -55,21 +53,9 @@ export default function PackageCard({
       </div>
 
       {/* Description */}
-      <p className="text-[11px] text-slate-500 mb-2 leading-snug">
+      <p className="text-[11px] text-slate-500 mb-3 leading-snug">
         {pkg.description}
       </p>
-
-      {/* Quality + Delivery chips — single row, compact */}
-      <div className="flex items-center gap-1.5 mb-3">
-        <div className="flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-full">
-          <CheckCircle2 size={10} className="text-emerald-500 flex-shrink-0" />
-          <span className="truncate">{pkg.quality}</span>
-        </div>
-        <div className="flex items-center gap-1 text-[10px] text-amber-700 bg-amber-50 border border-amber-100 px-1.5 py-0.5 rounded-full">
-          <Zap size={10} className="text-amber-500 flex-shrink-0" />
-          <span>{pkg.deliveryTime}</span>
-        </div>
-      </div>
 
       {/* Divider */}
       <div className="border-t border-slate-100 mb-2.5" />
@@ -98,3 +84,4 @@ export default function PackageCard({
     </div>
   );
 }
+

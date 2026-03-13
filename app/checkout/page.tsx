@@ -181,8 +181,7 @@ function CheckoutContent() {
                     <div className="space-y-3 text-gray-600 text-sm sm:text-base">
                       <div className="flex justify-between items-center pb-3 border-b border-gray-100"><span>Service</span><span className="font-semibold text-gray-800">{service.name}</span></div>
                       <div className="flex justify-between items-center pb-3 border-b border-gray-100"><span>Package</span><span className="font-semibold text-gray-800">{selectedPackage.quantityLabel}</span></div>
-                      <div className="flex justify-between items-center"><span>Quality</span><span className={`font-semibold ${textClass}`}>{selectedPackage.quality}</span></div>
-                      <div className="flex justify-between items-center"><span>Delivery Time</span><span className="font-semibold text-gray-800">{selectedPackage.deliveryTime}</span></div>
+      
                       {selectedPackage.serviceCategory && (
                         <div className="flex justify-between items-center"><span>Type</span><span className={`font-semibold capitalize ${textClass}`}>{selectedPackage.serviceCategory}</span></div>
                       )}
