@@ -105,7 +105,7 @@ function CheckoutContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!profileLink.trim()) { setOrderError('Please enter your profile/post/reel link'); return; }
+
     if (!service || !selectedPackage) { setOrderError('Invalid service or package'); return; }
 
     try {
@@ -211,11 +211,7 @@ function CheckoutContent() {
                     </div>
                   </div>
 
-                  {error && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4 text-red-700 text-sm flex items-start gap-3">
-                      <AlertTriangle size={18} className="flex-shrink-0 mt-0.5" /><span>{error}</span>
-                    </div>
-                  )}
+
 
                   <button type="submit" disabled={isLoading} className={`w-full ${btnClass} disabled:bg-gray-300 disabled:hover:bg-gray-300 text-white font-bold py-3 sm:py-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm sm:text-base`}>
                     {isLoading ? (<><Loader size={18} className="animate-spin" />{createOrderMutation.isPending ? 'Creating Order...' : 'Validating...'}</>) : '💳 Pay with UPI'}
