@@ -4,8 +4,7 @@
 // ============================================
 
 import { NextRequest, NextResponse } from 'next/server';
-
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
+import { BACKEND_URL } from '@/lib/api-config';
 const API_AUTH_KEY = process.env.BACKEND_API_KEY || '';
 
 export async function GET(
