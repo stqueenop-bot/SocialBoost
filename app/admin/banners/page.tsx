@@ -1,25 +1,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Trash2, Edit, Plus } from 'lucide-react';
+import Image from 'next/image';
+import { Trash2, Plus, ToggleLeft, ToggleRight, ImageIcon } from 'lucide-react';
 
 interface Banner {
-  id: number;
-  title: string;
-  subtitle: string;
-  buttonText: string;
-  buttonLink: string;
+  id: string;
   imageUrl: string;
-  backgroundColor: string;
-  order: number;
   active: boolean;
+  createdAt: string;
 }
 
 export default function BannersAdmin() {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [newUrl, setNewUrl] = useState('');
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     fetchBanners();
@@ -28,181 +25,154 @@ export default function BannersAdmin() {
   const fetchBanners = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/banners');
-      const result = await response.json();
-      if (result.success) {
-        setBanners(result.data);
-      } else {
-        setError('Failed to load banners');
-      }
-    } catch (err) {
+      // Fetch all banners (active + inactive) for admin view
+      const res = await fetch('/api/banners/all');
+      const result = await res.json();
+      if (result.success) setBanners(result.data);
+      else setError('Failed to load banners');
+    } catch {
       setError('Error fetching banners');
-      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this banner?')) return;
-
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newUrl.trim()) return;
+    setAdding(true);
     try {
-      const response = await fetch(`/api/banners/${id}`, {
-        method: 'DELETE',
+      const res = await fetch('/api/banners', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrl: newUrl.trim(), active: true }),
       });
-      const result = await response.json();
+      const result = await res.json();
       if (result.success) {
-        setBanners(banners.filter((b) => b.id !== id));
+        setNewUrl('');
+        fetchBanners();
       } else {
-        setError('Failed to delete banner');
+        setError(result.message || 'Failed to add banner');
       }
-    } catch (err) {
-      setError('Error deleting banner');
-      console.error(err);
+    } catch {
+      setError('Error adding banner');
+    } finally {
+      setAdding(false);
     }
   };
 
-  const toggleActive = async (id: number, active: boolean) => {
+  const handleDelete = async (id: string) => {
+    if (!confirm('Delete this banner?')) return;
     try {
-      const response = await fetch(`/api/banners/${id}`, {
+      const res = await fetch(`/api/banners/${id}`, { method: 'DELETE' });
+      const result = await res.json();
+      if (result.success) setBanners(banners.filter((b) => b.id !== id));
+      else setError('Failed to delete banner');
+    } catch {
+      setError('Error deleting banner');
+    }
+  };
+
+  const toggleActive = async (id: string, active: boolean) => {
+    try {
+      const res = await fetch(`/api/banners/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ active: !active }),
       });
-      const result = await response.json();
-      if (result.success) {
-        fetchBanners();
-      }
-    } catch (err) {
-      console.error('Error updating banner:', err);
+      const result = await res.json();
+      if (result.success) fetchBanners();
+    } catch {
+      console.error('Error toggling banner');
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 p-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center py-12">
-            <p className="text-slate-400 text-lg">Loading...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 p-4 sm:p-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
+      <div className="max-w-4xl mx-auto">
+
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-              Manage Banners
-            </h1>
-            <p className="text-slate-400">Create and manage promotional banners for your homepage</p>
-          </div>
-          <Link
-            href="/admin/banners/new"
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
-          >
-            <Plus size={20} />
-            New Banner
-          </Link>
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-slate-800">Banners</h1>
+          <p className="text-sm text-slate-500 mt-1">Manage homepage banner images</p>
         </div>
 
-        {/* Error Message */}
+        {/* Error */}
         {error && (
-          <div className="mb-6 p-4 bg-red-900/50 border border-red-500 rounded-lg text-red-200">
+          <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm">
             {error}
           </div>
         )}
 
-        {/* Banners Table */}
-        {banners.length > 0 ? (
-          <div className="bg-slate-900/50 border border-slate-700 rounded-lg overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-slate-800 border-b border-slate-700">
-                  <tr>
-                    <th className="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-slate-200">
-                      Title
-                    </th>
-                    <th className="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-slate-200">
-                      Order
-                    </th>
-                    <th className="px-4 sm:px-6 py-3 text-left text-sm font-semibold text-slate-200">
-                      Status
-                    </th>
-                    <th className="px-4 sm:px-6 py-3 text-right text-sm font-semibold text-slate-200">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-700">
-                  {banners.map((banner) => (
-                    <tr
-                      key={banner.id}
-                      className="hover:bg-slate-800/50 transition-colors"
-                    >
-                      <td className="px-4 sm:px-6 py-4">
-                        <div>
-                          <p className="font-medium text-white text-sm sm:text-base">
-                            {banner.title}
-                          </p>
-                          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                            {banner.subtitle.substring(0, 50)}...
-                          </p>
-                        </div>
-                      </td>
-                      <td className="px-4 sm:px-6 py-4 text-sm text-slate-300">
-                        {banner.order}
-                      </td>
-                      <td className="px-4 sm:px-6 py-4">
-                        <button
-                          onClick={() => toggleActive(banner.id, banner.active)}
-                          className={`text-xs px-3 py-1 rounded-full font-medium transition-colors ${
-                            banner.active
-                              ? 'bg-green-500/20 text-green-300 hover:bg-green-500/30'
-                              : 'bg-slate-600/50 text-slate-300 hover:bg-slate-600'
-                          }`}
-                        >
-                          {banner.active ? 'Active' : 'Inactive'}
-                        </button>
-                      </td>
-                      <td className="px-4 sm:px-6 py-4 text-right">
-                        <div className="flex justify-end gap-2">
-                          <Link
-                            href={`/admin/banners/${banner.id}`}
-                            className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
-                            title="Edit"
-                          >
-                            <Edit size={18} className="text-blue-400" />
-                          </Link>
-                          <button
-                            onClick={() => handleDelete(banner.id)}
-                            className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
-                            title="Delete"
-                          >
-                            <Trash2 size={18} className="text-red-400" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+        {/* Add form */}
+        <form onSubmit={handleAdd} className="mb-6 bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm">
+          <p className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+            <Plus className="w-4 h-4" /> Add New Banner
+          </p>
+          <div className="flex gap-2">
+            <input
+              type="url"
+              value={newUrl}
+              onChange={(e) => setNewUrl(e.target.value)}
+              placeholder="https://example.com/banner.jpg"
+              required
+              className="flex-1 px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 bg-slate-50"
+            />
+            <button
+              type="submit"
+              disabled={adding}
+              className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition disabled:opacity-60"
+            >
+              {adding ? 'Adding…' : 'Add'}
+            </button>
+          </div>
+          <p className="text-[11px] text-slate-400 mt-2">Paste a direct image URL. Recommended size: 1200×375 px (16:5 ratio).</p>
+        </form>
+
+        {/* Banner list */}
+        {loading ? (
+          <div className="text-center py-12 text-slate-400 text-sm">Loading…</div>
+        ) : banners.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-xl border border-slate-200">
+            <ImageIcon className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+            <p className="text-slate-500 font-medium">No banners yet</p>
+            <p className="text-slate-400 text-sm mt-1">Add your first banner image above</p>
           </div>
         ) : (
-          <div className="text-center py-12 bg-slate-900/50 border border-slate-700 rounded-lg">
-            <p className="text-slate-400 text-lg mb-4">No banners yet</p>
-            <Link
-              href="/admin/banners/new"
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-            >
-              <Plus size={20} />
-              Create Your First Banner
-            </Link>
+          <div className="space-y-3">
+            {banners.map((banner) => (
+              <div key={banner.id} className={`bg-white border rounded-xl overflow-hidden shadow-sm ${banner.active ? 'border-slate-200' : 'border-dashed border-slate-300 opacity-60'}`}>
+                {/* Preview */}
+                <div className="relative w-full bg-slate-100" style={{ aspectRatio: '16 / 5' }}>
+                  <Image
+                    src={banner.imageUrl}
+                    alt="Banner preview"
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </div>
+                {/* Controls */}
+                <div className="flex items-center justify-between px-4 py-3 border-t border-slate-100 bg-slate-50">
+                  <div className="text-xs text-slate-400 truncate max-w-[60%]">{banner.imageUrl}</div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => toggleActive(banner.id, banner.active)}
+                      className={`flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition ${banner.active ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                    >
+                      {banner.active ? <ToggleRight className="w-3.5 h-3.5" /> : <ToggleLeft className="w-3.5 h-3.5" />}
+                      {banner.active ? 'Active' : 'Inactive'}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(banner.id)}
+                      className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

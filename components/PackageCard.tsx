@@ -1,7 +1,7 @@
 'use client';
 
-import { Package } from '@/admin_frontend/lib/types';
-import { Star } from 'lucide-react';
+import { Package } from '@/lib/types';
+import { CheckCircle2, Zap, Star } from 'lucide-react';
 import Link from 'next/link';
 
 interface PackageCardProps {
