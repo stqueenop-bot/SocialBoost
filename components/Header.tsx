@@ -15,11 +15,11 @@ export default function Header() {
         {/* Logo — replace /logo.png with your own image */}
         <a href="/" className="flex items-center h-9">
           <Image
-            src="https://res.cloudinary.com/dtjndjsnj/image/upload/v1773428226/ChatGPT_Image_Mar_13_2026_12_08_45_PM_upivsk.png"
-            alt="SocialBoost"
-            width={1000}
-            height={1000}
-            className="object-contain h-9 w-auto"
+            src="/logo.png"
+            alt="Fastxera Logo"
+            width={200}
+            height={200}
+            className="object-contain h-9 w-auto mix-blend-saturation"
             priority
             unoptimized
           />

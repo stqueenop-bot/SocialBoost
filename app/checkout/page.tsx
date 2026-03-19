@@ -157,6 +157,57 @@ function CheckoutContent() {
   const btnClass = service.accentColor;
   const textClass = service.accentText;
 
+  // Link Label and Placeholder logic
+  const getLinkDetails = () => {
+    const slug = service.slug;
+    const cat = selectedPackage.serviceCategory;
+
+    if (slug === 'netflix' || slug === 'amazon-prime' || slug === 'spotify') {
+      return { 
+        label: `${service.name} Account Email`, 
+        placeholder: 'Enter your account email (e.g., user@example.com)',
+        showVideo: false
+      };
+    }
+
+    if (slug === 'youtube') {
+      const isSubs = cat === 'subscribers';
+      return { 
+        label: isSubs ? 'YouTube Channel URL' : 'YouTube Video URL', 
+        placeholder: isSubs ? 'https://youtube.com/channel/yourchannel' : 'https://youtube.com/watch?v=abc123' ,
+        showVideo: false
+      };
+    }
+
+    if (slug === 'facebook') {
+      const isFollowers = cat === 'followers';
+      return { 
+        label: isFollowers ? 'Facebook Profile / Page URL' : 'Facebook Post URL', 
+        placeholder: isFollowers ? 'https://facebook.com/yourprofile' : 'https://facebook.com/posts/123',
+        showVideo: false
+      };
+    }
+
+    if (slug === 'telegram') {
+      const isGroup = cat === 'members' || cat === 'subscribers';
+      return { 
+        label: isGroup ? 'Telegram Group / Channel Link' : 'Telegram Post Link', 
+        placeholder: isGroup ? 'https://t.me/yourgroup' : 'https://t.me/yourgroup/123',
+        showVideo: false
+      };
+    }
+
+    // Default / Instagram Fallback
+    const isFollowers = cat === 'followers';
+    return { 
+      label: isFollowers ? `${service.name} Profile URL` : `${service.name} Post / Reel URL`, 
+      placeholder: isFollowers ? `https://${slug}.com/yourprofile` : `https://${slug}.com/p/abc123 or /reel/abc123`,
+      showVideo: slug === 'instagram'
+    };
+  };
+
+  const { label, placeholder, showVideo } = getLinkDetails();
+
   return (
     <div className="min-h-screen pt-6 sm:pt-8 lg:pt-12 pb-10 sm:pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl lg:max-w-5xl mx-auto">
@@ -196,20 +247,22 @@ function CheckoutContent() {
                   </div>
 
                   {/* ===== HOW TO BUY VIDEO (Form Phase) ===== */}
-                  <YouTubeVideo
-                    url="https://youtube.com/shorts/eod8fg_vcgc?si=-lWRqV0jSFS7fHrQ"
-                    heading="Quick Video Guide"
-                    className="w-full"
-                  />
+                  {showVideo && (
+                    <YouTubeVideo
+                      url="https://youtube.com/shorts/eod8fg_vcgc?si=-lWRqV0jSFS7fHrQ"
+                      heading="Quick Video Guide"
+                      className="w-full"
+                    />
+                  )}
 
                   <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 shadow-sm">
                     <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">Enter Your Link</h2>
                     <label className="block text-xs sm:text-sm text-gray-600 mb-2">
-                      {selectedPackage.serviceCategory === 'followers' ? 'Instagram Profile URL' : 'Instagram Post / Reel URL'}
+                      {label}
                     </label>
                     <input
                       type="text"
-                      placeholder={selectedPackage.serviceCategory === 'followers' ? 'https://instagram.com/yourprofile' : 'https://instagram.com/p/abc123 or /reel/abc123'}
+                      placeholder={placeholder}
                       value={profileLink}
                       onChange={(e) => { setProfileLink(e.target.value); setOrderError(''); }}
                       className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg bg-gray-50 border border-gray-200 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:border-amber-400 transition-all text-sm"
