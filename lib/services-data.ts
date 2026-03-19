@@ -23,7 +23,7 @@ export const services: Service[] = [
       { id: 'ig-15000f', quantity: 15000, quantityLabel: '15000 Followers', price: 199, description: 'Indian Real Non-drop Followers', serviceCategory: 'followers', ssmServiceId: 3822 },
       { id: 'ig-25000f', quantity: 25000, quantityLabel: '25000 Followers', price: 299, description: 'Indian Real Non-drop Followers', serviceCategory: 'followers', ssmServiceId: 3822 },
       { id: 'ig-50000f', quantity: 50000, quantityLabel: '50000 Followers', price: 449, description: 'Indian Real Non-drop Followers', serviceCategory: 'followers', ssmServiceId: 3822 },
-      { id: 'ig-100kf', quantity: 100000, quantityLabel: '100K Followers', price: 649, description: 'Indian Real Non-drop Followers', serviceCategory: 'followers', ssmServiceId: 2, isBestSeller: true },
+      { id: 'ig-100kf', quantity: 100000, quantityLabel: '100K Followers', price: 649, description: 'Indian Real Non-drop Followers', serviceCategory: 'followers', ssmServiceId: 2 },
       { id: 'ig-1mf', quantity: 1000000, quantityLabel: '1M Followers', price: 499, description: 'Indian Real Non-drop Followers', serviceCategory: 'followers', ssmServiceId: 2 },
       // Likes
       { id: 'ig-1000l', quantity: 1000, quantityLabel: '1000 Likes', price: 30, description: 'Indian Real Non-drop Likes', serviceCategory: 'likes', ssmServiceId: 3924 },
