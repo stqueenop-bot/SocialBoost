@@ -3,7 +3,6 @@
 import React from 'react'
 import { Youtube, MessageCircle, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
 interface FloatingActionsProps {
   onOpenVideo: () => void
 }
