@@ -19,7 +19,7 @@ export default function Header() {
             alt="Fastxera Logo"
             width={200}
             height={200}
-            className="object-contain h-9 w-auto mix-blend-saturation"
+            className="object-contain h-9 w-auto"
             priority
             unoptimized
           />
