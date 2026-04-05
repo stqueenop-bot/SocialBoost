@@ -6,6 +6,7 @@ import QueryProvider from '@/components/QueryProvider'
 import Schema, { OrganizationSchema } from '@/components/Schema'
 import './globals.css'
 
+
 const geist = Geist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
