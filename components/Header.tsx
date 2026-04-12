@@ -15,7 +15,7 @@ export default function Header() {
         {/* Logo — replace /logo.png with your own image */}
         <a href="/" className="flex items-center h-9">
           <Image
-            src="https://res.cloudinary.com/ddb16ch5l/image/upload/v1774126008/logo_fmh1zs.png"
+            src="/logo.png"
             alt="Fastxera Logo"
             width={200}
             height={200}

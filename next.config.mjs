@@ -4,6 +4,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+     domains: ["i.ibb.co"],
     unoptimized: true,
     remotePatterns: [
       {
@@ -11,7 +12,8 @@ const nextConfig = {
         hostname: 'res.cloudinary.com',
         port: '',
         pathname: '/**',
-      },
+      }, 
+      
     ],
   },
 }
