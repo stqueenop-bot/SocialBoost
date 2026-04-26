@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 import Schema from '@/components/Schema';
 
 interface Props {
-  params: { serviceName: string };
+  params: Promise<{ serviceName: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -44,7 +44,7 @@ export default async function ServicePage({ params }: Props) {
   const serviceName = (await params).serviceName;
   const service = getServiceBySlug(serviceName);
   const allServices = getAllServices();
-  const otherServices = allServices.filter((s) => s.slug !== params.serviceName);
+  const otherServices = allServices.filter((s) => s.slug !== serviceName);
 
   if (!service) {
     return (

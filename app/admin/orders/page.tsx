@@ -205,10 +205,8 @@ function OrderForm({ onLogout }: { onLogout: () => void }) {
         let mappedCategory = 'views';
         if (form.serviceId === '602') mappedCategory = 'views';
         if (form.serviceId === '670') mappedCategory = 'comments';
-        if (form.serviceId === '3924') mappedCategory = 'likes';
-        if (form.serviceId === '3822') mappedCategory = 'followers';
-        if (form.serviceId === '554') mappedCategory = 'likes';
-        if (form.serviceId === '12560') mappedCategory = 'followers';
+        if (form.serviceId === '12587') mappedCategory = 'likes';
+        if (form.serviceId === '10183') mappedCategory = 'followers';
 
         try {
             const res = await fetch('/api/orders', {
@@ -277,10 +275,8 @@ function OrderForm({ onLogout }: { onLogout: () => void }) {
                         >
                             <option value="602">602 - Reel Views (Supportive)</option>
                             <option value="670">670 - Comments (Supportive)</option>
-                            <option value="3924">3924 - Likes (IND SMM)</option>
-                            <option value="3822">3822 - Followers (IND SMM)</option>
-                            <option value="554">554 - Likes (Supportive - Old)</option>
-                            <option value="12560">12560 - Followers (TNT - Old)</option>
+                            <option value="12587">12587 - Likes (TNT SMM)</option>
+                            <option value="10183">10183 - Followers (TNT SMM)</option>
                         </select>
                     </div>
 
